@@ -11,18 +11,21 @@ URL = "https://catalog.api.2gis.com/3.0/"
 
 OUTDIR = "./output"
 
-
+# Ошибки, связанные с протоколом 2GIS
 class APIException(Exception):
     pass
 
+# Ошибки, связанные с соединением с 2GIS
 class APIHTTPException(APIException):
     pass
 
+# Ошибки, связанные с неправильными данными от пользователя
 class DGISException(Exception):
     pass
 
 # "items?q=ИГУ&sort_point=37.630866,55.752256&ke"
 
+# Перечень интересующих нас полей об организации
 FIELDS = {
     "items.point": "координаты объекта, заданные в системе координат WGS84 в формате lon, lat",
     "items.address": "адрес, по которому располагается объект",
@@ -70,6 +73,7 @@ FIELDS = {
     "items.floor_id": "идентификатор этажа",
 }
 
+# Класс-фасад, представляющий собой API 2GIS
 class DGIS:
     def __init__(self, key):
         self.key = key
@@ -114,6 +118,8 @@ class DGIS:
         self.fields[field] = val
 
 
+# Класс, позволяющий с JSON работать юез исплользования 
+# лишних скобок и кавычек
 class JObject:
     def __init__(self, obj):
         self.obj = obj
@@ -132,6 +138,8 @@ class JObject:
         return str(self)
 
 
+# Класс-адаптер структуры JSON, возвращаемой 2GIS в
+# структуру генератора LandingPage и другие файлы (картинки)
 class DescribeBranch(JObject):
 
     def header(self):
@@ -200,6 +208,7 @@ class DescribeBranch(JObject):
     def services(self):
         return "Services", []
 
+# главная проргамма преобразрвания запроса в Landing Page
 if __name__=="__main__":
     api = DGIS(KEY)
 
@@ -211,7 +220,7 @@ if __name__=="__main__":
     res = r["result"]
     items = res["items"]
 
-    for item in items:
+    for item in items:   # Найденные предприятия
         # pprint(item)
         d = DescribeBranch(item)
         pprint(d.convert())
