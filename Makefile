@@ -4,4 +4,5 @@
 PY=python
 
 test:
-	python pagegen.py
+	python pagegen.py ИГУ Иркутск
+	# python pagegen.py СФУ Красноярск

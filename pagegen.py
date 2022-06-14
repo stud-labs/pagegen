@@ -1,10 +1,15 @@
 from base64 import b64decode
 import requests as rq
 from pprint import pprint
+from os.path import join as pjoin
+import os
+import sys
 
 KEYb64="cnVqYnZ4NzQ4Nw=="
 KEY = b64decode(KEYb64).decode("utf8")
 URL = "https://catalog.api.2gis.com/3.0/"
+
+OUTDIR = "./output"
 
 
 class APIException(Exception):
@@ -77,7 +82,7 @@ class DGIS:
             raise DGISException("Keyword 'key' is not allowed")
 
         kwargs["key"] = self.key
-        pprint(kwargs)
+        # pprint(kwargs)
         resp = rq.get(URL+method, params=kwargs)
         if not str(resp.status_code).startswith("20"):
             raise APIHTTPException("API HTTP Error")
@@ -109,16 +114,106 @@ class DGIS:
         self.fields[field] = val
 
 
+class JObject:
+    def __init__(self, obj):
+        self.obj = obj
 
+    def __getattr__(self, name):
+        return JObject(self.obj.get(name))
+
+    def __getitem__(self, index):
+        return JObject(self.obj[index])
+
+    def __str__(self):
+        return str(self.obj)
+
+    @property
+    def s(self):
+        return str(self)
+
+
+class DescribeBranch(JObject):
+
+    def header(self):
+        return "Header", {
+            "title": self.name_ex.legal_name.s,
+            "paragraph": self.full_address_name.s}
+
+
+    def wt(self):
+        days = self.schedule
+        answer = ["Время работы"]
+        for day, wh in days.obj.items():
+            s = ""
+            for interval in JObject(wh).working_hours:
+                f = interval["from"]
+                t = interval["to"]
+                s+="{} - {} <br/>".format(f, t)
+            answer.append("{}<br/>{}".format(day, s))
+        return answer
+
+    def about(self):
+        return "About", {
+            "paragraph": "",
+            "Why2": self.wt(),
+            "Why": [
+                self.name_ex.description.s,
+                "Адрес:",
+                self.full_address_name.s,
+                "",
+            ],
+        }
+
+    def description(self):
+        d = {}
+        for m in [self.header, self.about]:
+            k, v = m()
+            d[k] = v
+
+        return d
+
+
+    def dl(self, url, fn):
+        fn = pjoin(OUTDIR, fn)
+
+        os.system("curl '{}' --output '{}'".format(url, fn))
+
+    def aboutimage(self):
+
+        # import pudb; pu.db
+
+        try:
+            url = self.external_content[0]\
+                      .main_photo_url.s
+        except (AttributeError, IndexError):
+            print("Could'nt recognize about image")
+            return
+
+        self.dl(url, "about.jpg")
+
+
+    def convert(self):
+
+        self.aboutimage()
+        return self.description()
+
+    def services(self):
+        return "Services", []
 
 if __name__=="__main__":
     api = DGIS(KEY)
 
     # r = api.search(q="ИГУ Иркутск")
 
-    r = api.branch("ИГУ Иркутск")
+    query = " ".join(sys.argv[1:])
+
+    r = api.branch(query)
     res = r["result"]
     items = res["items"]
 
     for item in items:
-        print(item)
+        # pprint(item)
+        d = DescribeBranch(item)
+        pprint(d.convert())
+
+        quit()
