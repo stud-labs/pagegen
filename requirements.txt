@@ -1,0 +1,3 @@
+pelican[markdown]
+requests
+2gis
