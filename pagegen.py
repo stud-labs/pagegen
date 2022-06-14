@@ -13,20 +13,36 @@ class APIException(Exception):
 class APIHTTPException(APIException):
     pass
 
+class DGISException(Exception):
+    pass
+
 # "items?q=ИГУ&sort_point=37.630866,55.752256&ke"
 
-def api(method, what, where):
-    global KEY
-    resp = rq.get(URL+method,
-                  params={"q":what+" "+where,
-                          "key":KEY})
-    if not str(resp.status_code).startswith("20"):
-        raise APIHTTPException("API HTTP Error")
-    answer =  resp.json()
-    meta = answer["meta"]
-    if "error" in meta:
-        raise APIException(meta["error"]["message"])
-    return answer
+class DGIS:
+    def __init__(self, key):
+        self.key = key
+
+    def api(self, method, **kwargs):
+        global KEY
+
+        if "key" in kwargs:
+            raise DGISException("Keyword 'key' is not allowed")
+
+        kwargs["key"] = self.key
+        pprint(kwargs)
+        resp = rq.get(URL+method, params=kwargs)
+        if not str(resp.status_code).startswith("20"):
+            raise APIHTTPException("API HTTP Error")
+        answer =  resp.json()
+        meta = answer["meta"]
+        if "error" in meta:
+            raise APIException(meta["error"]["message"])
+        return answer
+
+    def __call__(self, method, **kwargs):
+        return self.api(method, **kwargs)
+
+api = DGIS(KEY)
 
 r = api(method="items", what="ИГУ", where="Иркутск")
 
