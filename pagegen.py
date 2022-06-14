@@ -117,5 +117,8 @@ if __name__=="__main__":
     # r = api.search(q="ИГУ Иркутск")
 
     r = api.branch("ИГУ Иркутск")
+    res = r["result"]
+    items = res["items"]
 
-    pprint(r)
+    for item in items:
+        print(item)
