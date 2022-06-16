@@ -4,12 +4,14 @@ from pprint import pprint
 from os.path import join as pjoin
 import os
 import sys
+import config as cf
+import json
 
 KEYb64="cnVqYnZ4NzQ4Nw=="
 KEY = b64decode(KEYb64).decode("utf8")
 URL = "https://catalog.api.2gis.com/3.0/"
 
-OUTDIR = "./output"
+OUTDIR = cf.IMG
 
 # Ошибки, связанные с протоколом 2GIS
 class APIException(Exception):
@@ -118,7 +120,7 @@ class DGIS:
         self.fields[field] = val
 
 
-# Класс, позволяющий с JSON работать юез исплользования 
+# Класс, позволяющий с JSON работать юез исплользования
 # лишних скобок и кавычек
 class JObject:
     def __init__(self, obj):
@@ -205,6 +207,13 @@ class DescribeBranch(JObject):
         self.aboutimage()
         return self.description()
 
+    def convertandsave(self):
+        js = self.convert()
+        o = open(pjoin(cf.DATA, "data.json"), "w")
+        json.dump(js, o, ensure_ascii=False, indent=4)
+        o.close()
+
+
     def services(self):
         return "Services", []
 
@@ -220,9 +229,34 @@ if __name__=="__main__":
     res = r["result"]
     items = res["items"]
 
-    for item in items:   # Найденные предприятия
+    print(" Список найденных организаций")
+    for i, item in enumerate(items):
+        j = DescribeBranch(item)
+
+        h = j.header()[1]["title"]
+        print("{} - '{}'".format(i+1, h))
+    if not items:
+        print("пуст!")
+        quit()
+
+    if items:
+        choice = input("-> ")
+        try:
+            choice = int(choice)
+        except ValueError:
+            print("Надо было ввести число. Выходим.")
+            quit()
+        if choice<=0:
+            print("Вввести надо было натуральное число большее нуля. Выходим.")
+            quit()
+        if choice>len(items):
+            print("Введенное число больше количества вариантовю Выходим")
+            quit()
+
+    choice -= 1
+
+    for item in items[choice:choice]:   # Найденные предприятия
         # pprint(item)
         d = DescribeBranch(item)
-        pprint(d.convert())
-
-        quit()
+        # pprint(d.convert())
+        d.convertandsave()
