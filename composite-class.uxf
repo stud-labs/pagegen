@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>350</x>
+      <y>280</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Facade&gt;&gt;
+dgis::DGIS
+--
+-key: String
+-fields: String[]
+--
+#api(method: String, **kw)
++search(q: String, **kw)
++branch(q: String, **kw)
++setupfields(**kw)
++[field: String]: String
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>690</x>
+      <y>280</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>dgis::JObject
+--
+-obj: JSON
+/s: String
+--
+#__getattr__(name: String): JObject
+#[index: int]: JObject
++__str__(): String
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>690</x>
+      <y>550</y>
+      <w>210</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>dgis::DescribeBranch
+--
+--
+#header(): (String, JSON)
+#about()
++description(): JSON
++convert(): JSON
++convertandsave()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>780</x>
+      <y>460</y>
+      <w>30</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>350</x>
+      <y>550</y>
+      <w>210</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+--main--
+ Список организаций
+1 - 'ФГБОУ ВО Иркутский 
+2 - 'ФГБОУ ВО Иркутский 
+3 - 'ФГБОУ ВО Иркутский 
+
+-&gt; 10                                 .</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>220</x>
+      <y>360</y>
+      <w>150</w>
+      <h>280</h>
+    </coordinates>
+    <panel_attributes>lt=)-</panel_attributes>
+    <additional_attributes>50.0;20.0;10.0;20.0;10.0;260.0;130.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLInterface</id>
+    <coordinates>
+      <x>580</x>
+      <y>580</y>
+      <w>100</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>IDescribe
+--
++convert \
+andsave()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>550</x>
+      <y>580</y>
+      <w>90</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=)-</panel_attributes>
+    <additional_attributes>60.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>630</x>
+      <y>590</y>
+      <w>80</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLInterface</id>
+    <coordinates>
+      <x>240</x>
+      <y>360</y>
+      <w>100</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>IDGIS
+--
++search(...)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>290</x>
+      <y>370</y>
+      <w>80</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>350</x>
+      <y>60</y>
+      <w>210</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>symbol=component
+2GIS API v 3.0
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>430</x>
+      <y>180</y>
+      <w>50</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=()-[JSON]</panel_attributes>
+    <additional_attributes>20.0;50.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>430</x>
+      <y>230</y>
+      <w>50</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=)-</panel_attributes>
+    <additional_attributes>20.0;20.0;20.0;50.0</additional_attributes>
+  </element>
+</diagram>
